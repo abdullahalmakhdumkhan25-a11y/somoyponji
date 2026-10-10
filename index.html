@@ -463,10 +463,54 @@ footer {
     padding-top: 30px;
   }
 }
+
+#loginGate {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: linear-gradient(145deg, #101f38, #243d66);
+  color: #202b3c;
+}
+.login-gate-card {
+  width: min(100%, 420px);
+  background: #fffaf0;
+  border: 1px solid #e2d7c3;
+  border-radius: 22px;
+  padding: 26px 22px;
+  text-align: center;
+  box-shadow: 0 12px 35px rgba(0,0,0,.2);
+}
+.login-gate-card h1 { margin: 0 0 8px; color: #172b4d; }
+.login-gate-card p { color: #687080; }
+#loginGateButton {
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: #172b4d;
+  color: white;
+  font-weight: 700;
+}
+#loginGateStatus { font-size: 13px; overflow-wrap: anywhere; }
+body.auth-locked > header,
+body.auth-locked > main,
+body.auth-locked > footer { display: none !important; }
+
 </style>
 </head>
 
-<body>
+<body class="auth-locked">
+
+<section id="loginGate">
+  <div class="login-gate-card">
+    <div style="font-size:42px;margin-bottom:8px">🗓️</div>
+    <h1>সময়পঞ্জি</h1>
+    <p>নিজের সময়, পড়াশোনা, কাজ ও ডায়েরি দেখতে Google অ্যাকাউন্ট দিয়ে লগইন করো।</p>
+    <button id="loginGateButton" type="button">Google দিয়ে প্রবেশ করো</button>
+    <p id="loginGateStatus" role="status">লগইন না করা পর্যন্ত হোমপেজ খোলা হবে না।</p>
+  </div>
+</section>
 
 <header>
   <div class="header-inner">
@@ -492,6 +536,18 @@ footer {
 </header>
 
 <main>
+
+  <section id="cloudPanel" class="date-card" aria-label="Google account and cloud sync">
+    <h2>☁️ Google অ্যাকাউন্ট ও ক্লাউড ব্যাকআপ</h2>
+    <p class="date-details" id="cloudStatus">Google দিয়ে লগইন করলে নিজের তথ্য Firebase-এ সংরক্ষণ করতে পারবে।</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:12px">
+      <button class="primary-btn" id="googleLoginButton" type="button">Google দিয়ে লগইন</button>
+      <button class="secondary-btn" id="googleLogoutButton" type="button" hidden>লগআউট</button>
+      <button class="secondary-btn" id="cloudSaveButton" type="button" disabled>ক্লাউডে সংরক্ষণ</button>
+      <button class="secondary-btn" id="cloudLoadButton" type="button" disabled>অন্য ডিভাইসের তথ্য আনুন</button>
+    </div>
+    <p class="date-details">প্রথমে ব্যাকআপ রাখবে। “ক্লাউডে সংরক্ষণ” বর্তমান এই ডিভাইসের তথ্য আপলোড করে; “অন্য ডিভাইসের তথ্য আনুন” এই ডিভাইসের তথ্য ক্লাউডের তথ্য দিয়ে প্রতিস্থাপন করে।</p>
+  </section>
 
   <!-- HOME -->
   <section id="homePage" class="screen active">
@@ -944,6 +1000,9 @@ footer {
 }
 </style>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 "use strict";
 
@@ -1866,6 +1925,157 @@ renderWorkPlans();
 renderSummary();
 renderDiaries();
 updateHomeStats();
+
+
+/* ===============================
+   Firebase: Google login + private cloud backup
+================================ */
+const firebaseConfig = {
+  apiKey: "AIzaSyDzpg_FEnhviZ2A_S_YJov_v1HRbDbGdK4",
+  authDomain: "somoyponji.firebaseapp.com",
+  projectId: "somoyponji",
+  storageBucket: "somoyponji.firebasestorage.app",
+  messagingSenderId: "241865567053",
+  appId: "1:241865567053:web:6bc9473b5e64bcf675a504",
+  measurementId: "G-TRSLLNSEFV"
+};
+
+let somoyponjiUser = null;
+let firebaseReady = false;
+
+function cloudMessage(message) {
+  const el = $("cloudStatus");
+  if (el) el.textContent = message;
+}
+
+function updateCloudButtons() {
+  $("googleLoginButton").hidden = !!somoyponjiUser;
+  $("googleLogoutButton").hidden = !somoyponjiUser;
+  $("cloudSaveButton").disabled = !somoyponjiUser || !firebaseReady;
+  $("cloudLoadButton").disabled = !somoyponjiUser || !firebaseReady;
+  if (somoyponjiUser) {
+    cloudMessage("লগইন করা আছে: " + (somoyponjiUser.email || "Google অ্যাকাউন্ট"));
+  } else {
+    cloudMessage("এখনো লগইন করা হয়নি। Google দিয়ে লগইন করো।");
+  }
+}
+
+try {
+  if (typeof firebase !== "undefined") {
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    firebaseReady = true;
+
+    $("googleLoginButton").addEventListener("click", async () => {
+      try {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        await auth.signInWithPopup(provider);
+      } catch (error) {
+        console.error(error);
+        cloudMessage("লগইন হয়নি: " + (error.message || error.code || "আবার চেষ্টা করো"));
+      }
+    });
+
+    $("googleLogoutButton").addEventListener("click", async () => {
+      try {
+        await auth.signOut();
+        cloudMessage("লগআউট হয়েছে।");
+      } catch (error) {
+        console.error(error);
+        cloudMessage("লগআউট করা যায়নি। আবার চেষ্টা করো।");
+      }
+    });
+
+    auth.onAuthStateChanged(user => {
+      somoyponjiUser = user;
+      updateCloudButtons();
+      const gate = $("loginGate");
+      if (user) {
+        document.body.classList.remove("auth-locked");
+        if (gate) gate.style.display = "none";
+      } else {
+        document.body.classList.add("auth-locked");
+        if (gate) gate.style.display = "grid";
+      }
+    });
+
+    $("loginGateButton").addEventListener("click", async () => {
+      try {
+        $("loginGateButton").disabled = true;
+        $("loginGateStatus").textContent = "Google লগইন খোলা হচ্ছে...";
+        const provider = new firebase.auth.GoogleAuthProvider();
+        await auth.signInWithPopup(provider);
+      } catch (error) {
+        console.error(error);
+        $("loginGateStatus").textContent =
+          "লগইন হয়নি: " + (error.message || error.code || "আবার চেষ্টা করো");
+      } finally {
+        $("loginGateButton").disabled = false;
+      }
+    });
+
+    $("cloudSaveButton").addEventListener("click", async () => {
+      if (!somoyponjiUser) return;
+      const button = $("cloudSaveButton");
+      button.disabled = true;
+      cloudMessage("তথ্য ক্লাউডে সংরক্ষণ হচ্ছে...");
+      try {
+        const batch = db.batch();
+        Object.values(STORAGE).forEach(key => {
+          const ref = db.collection("users").doc(somoyponjiUser.uid)
+            .collection("appData").doc(key);
+          batch.set(ref, {
+            value: readStore(key, key === STORAGE.diaries ||
+              key === STORAGE.study || key === STORAGE.work ? [] : {}),
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        });
+        await batch.commit();
+        cloudMessage("ক্লাউডে সংরক্ষণ সম্পন্ন হয়েছে। অন্য ডিভাইসে একই Google অ্যাকাউন্টে লগইন করে তথ্য আনতে পারবে।");
+      } catch (error) {
+        console.error(error);
+        cloudMessage("সংরক্ষণ হয়নি। Firestore Rules ঠিক আছে কি না দেখো। (" + (error.code || "error") + ")");
+      } finally {
+        updateCloudButtons();
+      }
+    });
+
+    $("cloudLoadButton").addEventListener("click", async () => {
+      if (!somoyponjiUser) return;
+      if (!confirm("এই ডিভাইসের বর্তমান তথ্য ক্লাউডের তথ্য দিয়ে প্রতিস্থাপন হবে। আগে ব্যাকআপ নিয়েছ তো?")) return;
+      const button = $("cloudLoadButton");
+      button.disabled = true;
+      cloudMessage("ক্লাউড থেকে তথ্য আনা হচ্ছে...");
+      try {
+        const snapshot = await db.collection("users").doc(somoyponjiUser.uid)
+          .collection("appData").get();
+        if (snapshot.empty) {
+          cloudMessage("এই অ্যাকাউন্টে এখনো ক্লাউড ব্যাকআপ নেই। অন্য ডিভাইসে আগে ক্লাউডে সংরক্ষণ করো।");
+          return;
+        }
+        snapshot.forEach(doc => {
+          if (Object.values(STORAGE).includes(doc.id) && doc.data() &&
+              Object.prototype.hasOwnProperty.call(doc.data(), "value")) {
+            localStorage.setItem(doc.id, JSON.stringify(doc.data().value));
+          }
+        });
+        alert("ক্লাউডের তথ্য আনা হয়েছে। পেজটি এখন রিফ্রেশ হবে।");
+        location.reload();
+      } catch (error) {
+        console.error(error);
+        cloudMessage("তথ্য আনা যায়নি। Firestore Rules ঠিক আছে কি না দেখো। (" + (error.code || "error") + ")");
+      } finally {
+        updateCloudButtons();
+      }
+    });
+  } else {
+    cloudMessage("Firebase SDK লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করো।");
+  }
+} catch (error) {
+  console.error(error);
+  cloudMessage("Firebase চালু করা যায়নি। কনফিগারেশন পরীক্ষা করতে হবে।");
+}
 
 </script>
 </body>
