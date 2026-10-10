@@ -8,16 +8,16 @@
 
 <style>
 :root {
-  --green: #176b4d;
-  --green-dark: #104c38;
-  --green-light: #e8f5ec;
-  --bg: #f3f8f2;
-  --card: #ffffff;
-  --text: #20362b;
-  --muted: #6b7b70;
-  --border: #dce9df;
+  --green: #172b4d;
+  --green-dark: #101f38;
+  --green-light: #f2ead8;
+  --bg: #f7f1e5;
+  --card: #fffaf0;
+  --text: #202b3c;
+  --muted: #687080;
+  --border: #e2d7c3;
   --danger: #c0392b;
-  --shadow: 0 5px 20px rgba(24, 76, 51, .08);
+  --shadow: 0 5px 20px rgba(23, 43, 77, .08);
 }
 
 * {
@@ -48,8 +48,8 @@ header {
   color: white;
   padding: 24px 16px 28px;
   background:
-    radial-gradient(circle at 90% 10%, #6aa981 0, transparent 35%),
-    linear-gradient(135deg, #104c38, #21865d);
+    radial-gradient(circle at 90% 10%, #d9c9a7 0, transparent 35%),
+    linear-gradient(135deg, #101f38, #243d66);
   border-radius: 0 0 28px 28px;
 }
 
@@ -73,6 +73,7 @@ header {
   border: 1px solid rgba(255,255,255,.3);
   border-radius: 16px;
   font-size: 27px;
+  flex-shrink: 0;
 }
 
 .brand h1 {
@@ -259,7 +260,7 @@ input[type="password"],
 select,
 textarea {
   width: 100%;
-  border: 1px solid #cfddd2;
+  border: 1px solid #d9cfbd;
   border-radius: 11px;
   background: #fff;
   padding: 11px 12px;
@@ -274,7 +275,7 @@ textarea {
 
 input:focus, textarea:focus, select:focus {
   border-color: var(--green);
-  box-shadow: 0 0 0 3px rgba(23,107,77,.09);
+  box-shadow: 0 0 0 3px rgba(23,43,77,.10);
 }
 
 .btn {
@@ -354,7 +355,7 @@ input:focus, textarea:focus, select:focus {
 .progress-bar {
   height: 100%;
   width: 0;
-  background: linear-gradient(90deg, #279667, #76bd78);
+  background: linear-gradient(90deg, #172b4d, #607ba5);
   border-radius: inherit;
   transition: width .2s;
 }
@@ -364,7 +365,7 @@ input:focus, textarea:focus, select:focus {
   align-items: center;
   gap: 10px;
   padding: 11px 0;
-  border-bottom: 1px solid #edf2ed;
+  border-bottom: 1px solid #eee5d5;
 }
 
 .task:last-child {
@@ -430,7 +431,7 @@ input:focus, textarea:focus, select:focus {
 }
 
 .notice {
-  border-left: 4px solid #62a879;
+  border-left: 4px solid #b9a57e;
   background: var(--green-light);
   border-radius: 8px;
   padding: 12px;
@@ -470,7 +471,15 @@ footer {
 <header>
   <div class="header-inner">
     <div class="brand">
-      <div class="logo">🌿</div>
+      <div class="logo" aria-label="সময়পঞ্জি লোগো">
+        <svg viewBox="0 0 64 64" role="img" aria-hidden="true" width="42" height="42">
+          <rect x="8" y="13" width="40" height="42" rx="8" fill="#f7f1e5" stroke="#172b4d" stroke-width="3"/>
+          <path d="M8 25h40" stroke="#172b4d" stroke-width="3"/>
+          <path d="M19 8v11M37 8v11" stroke="#f7f1e5" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="43" cy="43" r="15" fill="#172b4d" stroke="#f7f1e5" stroke-width="3"/>
+          <path d="M43 34v10l6 4" fill="none" stroke="#f7f1e5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
       <div>
         <h1>সময়পঞ্জি</h1>
         <p>Somoyponji · সময়কে সাজাই সুন্দরভাবে</p>
@@ -487,7 +496,7 @@ footer {
   <!-- HOME -->
   <section id="homePage" class="screen active">
     <div class="date-card">
-      <h2>🌱 আজকের দিন</h2>
+      <h2>আজকের দিন</h2>
       <div class="date-main" id="todayDate">তারিখ লোড হচ্ছে...</div>
       <div class="date-details" id="todayDetails"></div>
       <div class="date-details">
@@ -725,7 +734,7 @@ footer {
     </div>
 
     <div class="card">
-      <h3>🌱 দৈনন্দিন অভ্যাস</h3>
+      <h3>দৈনন্দিন অভ্যাস</h3>
       <div id="habitTasks"></div>
 
       <label class="field-label" for="achievement">আজকের বিশেষ অর্জন</label>
@@ -868,7 +877,7 @@ footer {
 </main>
 
 <footer>
-  <strong>সময়পঞ্জি 🌿</strong><br>
+  <strong>সময়পঞ্জি</strong><br>
   নিজের সময়কে মূল্য দাও, প্রতিদিন একটু এগিয়ে যাও।<br>
   <span id="footerYear"></span>
 </footer>
@@ -1860,5 +1869,4 @@ updateHomeStats();
 
 </script>
 </body>
-</html>
 </html>
