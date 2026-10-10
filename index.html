@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#176b4d">
+<title>সময়পঞ্জি | Somoyponji</title>
+
+<style>
+:root {
+  --green: #176b4d;
+  --green-dark: #104c38;
+  --green-light: #e8f5ec;
+  --bg: #f3f8f2;
+  --card: #ffffff;
+  --text: #20362b;
+  --muted: #6b7b70;
+  --border: #dce9df;
+  --danger: #c0392b;
+  --shadow: 0 5px 20px rgba(24, 76, 51, .08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, "Noto Sans Bengali", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+button, .menu-card {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+header {
+  color: white;
+  padding: 24px 16px 28px;
+  background:
+    radial-gradient(circle at 90% 10%, #6aa981 0, transparent 35%),
+    linear-gradient(135deg, #104c38, #21865d);
+  border-radius: 0 0 28px 28px;
+}
+
+.header-inner, main, footer {
+  width: min(100% - 28px, 900px);
+  margin: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  background: rgba(255,255,255,.16);
+  border: 1px solid rgba(255,255,255,.3);
+  border-radius: 16px;
+  font-size: 27px;
+}
+
+.brand h1 {
+  font-size: 26px;
+  margin: 0;
+}
+
+.brand p {
+  margin: 0;
+  opacity: .85;
+  font-size: 13px;
+}
+
+.header-note {
+  margin: 20px 0 0;
+  font-size: 14px;
+  color: #e5f5e9;
+}
+
+main {
+  padding: 20px 0 35px;
+  min-height: 70vh;
+}
+
+.date-card {
+  padding: 18px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.date-card h2 {
+  font-size: 19px;
+  margin: 0 0 8px;
+}
+
+.date-main {
+  font-size: 22px;
+  font-weight: 750;
+  color: var(--green);
+}
+
+.date-details {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 24px 0 13px;
+}
+
+.section-heading h2 {
+  font-size: 19px;
+  margin: 0;
+}
+
+.section-heading span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.menu-card {
+  appearance: none;
+  text-align: left;
+  color: var(--text);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 17px 13px;
+  min-height: 142px;
+  box-shadow: var(--shadow);
+  transition: transform .15s, border-color .15s;
+}
+
+.menu-card:active {
+  transform: scale(.98);
+}
+
+.menu-icon {
+  width: 45px;
+  height: 45px;
+  display: grid;
+  place-items: center;
+  background: var(--green-light);
+  border-radius: 14px;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.menu-card strong {
+  display: block;
+  font-size: 15px;
+}
+
+.menu-card small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+  animation: fadeIn .2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.back-button {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--green);
+  border-radius: 12px;
+  padding: 9px 12px;
+  white-space: nowrap;
+}
+
+.page-heading h2 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.page-heading p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 17px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+
+.card h3 {
+  margin: 0 0 12px;
+  font-size: 17px;
+}
+
+label.field-label {
+  display: block;
+  margin: 12px 0 5px;
+  font-weight: 650;
+  font-size: 14px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="month"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #cfddd2;
+  border-radius: 11px;
+  background: #fff;
+  padding: 11px 12px;
+  outline: none;
+  color: var(--text);
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(23,107,77,.09);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: 11px;
+  padding: 10px 15px;
+  background: var(--green);
+  color: white;
+  font-weight: 650;
+  margin-top: 12px;
+}
+
+.btn.secondary {
+  background: var(--green-light);
+  color: var(--green-dark);
+}
+
+.btn.danger {
+  background: #fff0ee;
+  color: var(--danger);
+}
+
+.btn.full {
+  width: 100%;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.button-row .btn {
+  margin-top: 8px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.stat {
+  background: var(--green-light);
+  border-radius: 15px;
+  padding: 15px;
+}
+
+.stat strong {
+  display: block;
+  color: var(--green-dark);
+  font-size: 24px;
+}
+
+.stat span {
+  font-size: 12px;
+}
+
+.progress-track {
+  height: 12px;
+  background: #e3ece5;
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #279667, #76bd78);
+  border-radius: inherit;
+  transition: width .2s;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid #edf2ed;
+}
+
+.task:last-child {
+  border-bottom: none;
+}
+
+.task input {
+  width: 19px;
+  height: 19px;
+  accent-color: var(--green);
+  flex-shrink: 0;
+}
+
+.task span {
+  flex: 1;
+}
+
+.task small {
+  color: var(--muted);
+}
+
+.report-entry {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.report-entry:last-child {
+  border-bottom: none;
+}
+
+.report-entry strong {
+  display: block;
+}
+
+.diary-entry {
+  border: 1px solid var(--border);
+  padding: 14px;
+  border-radius: 13px;
+  margin-top: 10px;
+  background: #fbfdfb;
+}
+
+.diary-entry h4 {
+  margin: 0 0 5px;
+  font-size: 16px;
+}
+
+.diary-entry p {
+  margin: 8px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.diary-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.empty {
+  padding: 22px 10px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.notice {
+  border-left: 4px solid #62a879;
+  background: var(--green-light);
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 13px;
+  margin: 12px 0;
+}
+
+footer {
+  padding: 20px 0 30px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+@media (min-width: 650px) {
+  .menu-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .stat-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  header {
+    padding-top: 30px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo">🌿</div>
+      <div>
+        <h1>সময়পঞ্জি</h1>
+        <p>Somoyponji · সময়কে সাজাই সুন্দরভাবে</p>
+      </div>
+    </div>
+    <p class="header-note">
+      প্রতিদিনের কাজ, পড়াশোনা, ইবাদত ও নিজের জীবনের হিসাব রাখো এক জায়গায়।
+    </p>
+  </div>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section id="homePage" class="screen active">
+    <div class="date-card">
+      <h2>🌱 আজকের দিন</h2>
+      <div class="date-main" id="todayDate">তারিখ লোড হচ্ছে...</div>
+      <div class="date-details" id="todayDetails"></div>
+      <div class="date-details">
+        <span id="liveClock"></span>
+      </div>
+    </div>
+
+    <div class="section-heading">
+      <h2>তোমার সময়পঞ্জি</h2>
+      <span>এক জায়গায় সবকিছু</span>
+    </div>
+
+    <div class="menu-grid">
+      <button class="menu-card" data-page="calendarPage">
+        <div class="menu-icon">📅</div>
+        <strong>সাধারণ ক্যালেন্ডার</strong>
+        <small>তারিখ দেখো ও দিন নির্বাচন করো</small>
+      </button>
+
+      <button class="menu-card" data-page="studentPage">
+        <div class="menu-icon">📚</div>
+        <strong>শিক্ষার্থী ক্যালেন্ডার</strong>
+        <small>পড়াশোনা ও সময়ের হিসাব</small>
+      </button>
+
+      <button class="menu-card" data-page="workerPage">
+        <div class="menu-icon">💼</div>
+        <strong>চাকরিজীবী ক্যালেন্ডার</strong>
+        <small>কাজ ও দৈনিক পরিকল্পনা</small>
+      </button>
+
+      <button class="menu-card" data-page="reportPage">
+        <div class="menu-icon">📊</div>
+        <strong>আমার ক্যালেন্ডার</strong>
+        <small>নিজের দৈনিক কাজের হিসাব</small>
+      </button>
+
+      <button class="menu-card" data-page="summaryPage">
+        <div class="menu-icon">📈</div>
+        <strong>নিয়মিত রিপোর্ট</strong>
+        <small>দৈনিক ও মাসিক অগ্রগতি</small>
+      </button>
+
+      <button class="menu-card" data-page="diaryPage">
+        <div class="menu-icon">📔</div>
+        <strong>আমার ডায়েরি</strong>
+        <small>নিজের স্মৃতি লিখে রাখো</small>
+      </button>
+    </div>
+
+    <div class="section-heading">
+      <h2>আজকের অগ্রগতি</h2>
+    </div>
+
+    <div class="card">
+      <div class="stat-grid">
+        <div class="stat">
+          <strong id="homePercent">০%</strong>
+          <span>দৈনিক অগ্রগতি</span>
+        </div>
+        <div class="stat">
+          <strong id="homePrayer">০/৫</strong>
+          <span>নামাজ</span>
+        </div>
+        <div class="stat">
+          <strong id="homeStudy">০</strong>
+          <span>পড়াশোনার ঘণ্টা</span>
+        </div>
+        <div class="stat">
+          <strong id="homeDiary">০</strong>
+          <span>ডায়েরির লেখা</span>
+        </div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-bar" id="homeProgressBar"></div>
+      </div>
+      <button class="btn full" data-goto="reportPage">আজকের হিসাব লিখো →</button>
+    </div>
+  </section>
+
+  <!-- CALENDAR -->
+  <section id="calendarPage" class="screen">
+    <div class="page-heading">
+      <button class="back-button" data-home>← ফিরে যাও</button>
+      <div>
+        <h2>সাধারণ ক্যালেন্ডার</h2>
+        <p>তারিখ নির্বাচন করো</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <label class="field-label" for="calendarMonth">মাস নির্বাচন</label>
+      <input type="month" id="calendarMonth">
+      <div class="button-row">
+        <button class="btn" id="showCalendar">ক্যালেন্ডার দেখো</button>
+        <button class="btn secondary" id="calendarToday">আজকের মাস</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="calendarTitle">ক্যালেন্ডার</h3>
+      <div id="calendarGrid" class="calendar-grid"></div>
+      <div class="notice" id="selectedDateText">একটি তারিখ নির্বাচন করো।</div>
+    </div>
+
+    <div class="card">
+      <h3>নির্বাচিত দিনের নোট</h3>
+      <label class="field-label" for="calendarNote">নোট বা পরিকল্পনা</label>
+      <textarea id="calendarNote" placeholder="এই দিনের কাজ লিখো..."></textarea>
+      <button class="btn" id="saveCalendarNote">নোট সংরক্ষণ</button>
+      <p class="muted">নোট এই ব্রাউজারে সংরক্ষিত হবে।</p>
+    </div>
+  </section>
+
+  <!-- STUDENT -->
+  <section id="studentPage" class="screen">
+    <div class="page-heading">
+      <button class="back-button" data-home>← ফিরে যাও</button>
+      <div>
+        <h2>শিক্ষার্থী ক্যালেন্ডার</h2>
+        <p>পড়াশোনার পরিকল্পনা</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📖 পড়াশোনার পরিকল্পনা</h3>
+      <label class="field-label" for="studySubject">বিষয়ের নাম</label>
+      <input id="studySubject" type="text" placeholder="যেমন: বাংলা, ইংরেজি, গণিত">
+
+      <label class="field-label" for="studyHours">কত ঘণ্টা পড়বে?</label>
+      <input id="studyHours" type="number" min="0" max="24" step="0.5" placeholder="যেমন: ২">
+
+      <label class="field-label" for="studyDate">তারিখ</label>
+      <input id="studyDate" type="date">
+
+      <button class="btn" id="addStudyPlan">পরিকল্পনা সংরক্ষণ</button>
+    </div>
+
+    <div class="card">
+      <h3>আমার পড়াশোনার তালিকা</h3>
+      <div id="studyPlanList"></div>
+    </div>
+
+    <div class="card">
+      <h3>📌 পড়াশোনার পরামর্শ</h3>
+      <p>• প্রতিদিন বাস্তবসম্মত লক্ষ্য নির্ধারণ করো।</p>
+      <p>• নির্দিষ্ট সময় পরপর ছোট বিরতি নাও।</p>
+      <p>• শুধু সময় নয়, কী শিখলে সেটিও লিখে রাখো।</p>
+    </div>
+  </section>
+
+  <!-- WORKER -->
+  <section id="workerPage" class="screen">
+    <div class="page-heading">
+      <button class="back-button" data-home>← ফিরে যাও</button>
+      <div>
+        <h2>চাকরিজীবী ক্যালেন্ডার</h2>
+        <p>কাজ ও দৈনিক পরিকল্পনা</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>💼 কাজের পরিকল্পনা</h3>
+      <label class="field-label" for="workTitle">কাজের নাম</label>
+      <input id="workTitle" type="text" placeholder="যেমন: প্রতিবেদন তৈরি">
+
+      <label class="field-label" for="workDate">কাজের তারিখ</label>
+      <input id="workDate" type="date">
+
+      <label class="field-label" for="workPriority">অগ্রাধিকার</label>
+      <select id="workPriority">
+        <option value="সাধারণ">সাধারণ</option>
+        <option value="গুরুত্বপূর্ণ">গুরুত্বপূর্ণ</option>
+        <option value="জরুরি">জরুরি</option>
+      </select>
+
+      <button class="btn" id="addWorkPlan">কাজ যোগ করো</button>
+    </div>
+
+    <div class="card">
+      <h3>আমার কাজের তালিকা</h3>
+      <div id="workPlanList"></div>
+    </div>
+  </section>
+
+  <!-- DAILY REPORT -->
+  <section id="reportPage" class="screen">
+    <div class="page-heading">
+      <button class="back-button" data-home>← ফিরে যাও</button>
+      <div>
+        <h2>আমার ক্যালেন্ডার</h2>
+        <p>প্রতিদিনের জীবনযাপনের হিসাব</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <label class="field-label" for="reportDate">যে দিনের হিসাব লিখবে</label>
+      <input type="date" id="reportDate">
+      <button class="btn secondary" id="loadReport">এই দিনের হিসাব দেখো</button>
+    </div>
+
+    <div class="card">
+      <h3>🕌 পাঁচ ওয়াক্ত নামাজ</h3>
+      <div id="prayerTasks"></div>
+    </div>
+
+    <div class="card">
+      <h3>📚 জ্ঞান ও পড়াশোনা</h3>
+
+      <label class="field-label" for="quranAyahs">কুরআনের আয়াত</label>
+      <input type="number" id="quranAyahs" min="0" placeholder="কতটি আয়াত পড়েছ?">
+
+      <label class="field-label" for="quranPages">কুরআনের পৃষ্ঠা</label>
+      <input type="number" id="quranPages" min="0" placeholder="কত পৃষ্ঠা?">
+
+      <label class="field-label" for="quranJuz">কুরআনের পারা</label>
+      <input type="number" id="quranJuz" min="0" max="30" placeholder="পারা (ঐচ্ছিক)">
+
+      <label class="field-label" for="hadithCount">হাদিস পড়া</label>
+      <input type="number" id="hadithCount" min="0" placeholder="কতটি হাদিস?">
+
+      <label class="field-label" for="bookPages">ইসলামিক বইয়ের পৃষ্ঠা</label>
+      <input type="number" id="bookPages" min="0" placeholder="কত পৃষ্ঠা?">
+
+      <label class="field-label" for="textbookHours">পাঠ্যবই পড়ার ঘণ্টা</label>
+      <input type="number" id="textbookHours" min="0" max="24" step="0.5" placeholder="যেমন: ৩">
+
+      <label class="field-label" for="classAttendance">আজ ক্লাসে উপস্থিত ছিলে?</label>
+      <select id="classAttendance">
+        <option value="না">নির্বাচন করো</option>
+        <option value="হ্যাঁ">হ্যাঁ</option>
+        <option value="না">না</option>
+        <option value="প্রযোজ্য নয়">প্রযোজ্য নয়</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h3>🌱 দৈনন্দিন অভ্যাস</h3>
+      <div id="habitTasks"></div>
+
+      <label class="field-label" for="achievement">আজকের বিশেষ অর্জন</label>
+      <textarea id="achievement" placeholder="আজ কী ভালো কাজ বা অর্জন হয়েছে?"></textarea>
+
+      <label class="field-label" for="reflection">নিজের প্রতি আজকের মূল্যায়ন</label>
+      <textarea id="reflection" placeholder="আজ কী শিখলে? কাল কী উন্নতি করতে চাও?"></textarea>
+
+      <button class="btn full" id="saveReport">💾 আজকের হিসাব সংরক্ষণ</button>
+      <p class="muted">সংরক্ষিত তথ্য দিয়ে দৈনিক অগ্রগতি হিসাব করা হবে।</p>
+    </div>
+
+    <div class="card">
+      <h3>আজকের অগ্রগতি</h3>
+      <div class="stat-grid">
+        <div class="stat">
+          <strong id="reportPercent">০%</strong>
+          <span>সম্পন্ন কাজ</span>
+        </div>
+        <div class="stat">
+          <strong id="reportPrayer">০/৫</strong>
+          <span>নামাজ</span>
+        </div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-bar" id="reportProgressBar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="summaryPage" class="screen">
+    <div class="page-heading">
+      <button class="back-button" data-home>← ফিরে যাও</button>
+      <div>
+        <h2>নিয়মিত রিপোর্ট</h2>
+        <p>দৈনিক ও মাসিক অগ্রগতি</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <label class="field-label" for="summaryMonth">মাস নির্বাচন</label>
+      <input type="month" id="summaryMonth">
+      <button class="btn" id="showSummary">রিপোর্ট দেখো</button>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat">
+        <strong id="summaryDays">০</strong>
+        <span>হিসাব লেখা দিন</span>
+      </div>
+      <div class="stat">
+        <strong id="summaryAverage">০%</strong>
+        <span>গড় অগ্রগতি</span>
+      </div>
+      <div class="stat">
+        <strong id="summaryPrayers">০</strong>
+        <span>মোট নামাজ</span>
+      </div>
+      <div class="stat">
+        <strong id="summaryHours">০</strong>
+        <span>পড়াশোনার ঘণ্টা</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>দৈনিক রিপোর্টের তালিকা</h3>
+      <div id="summaryList"></div>
+    </div>
+
+    <div class="card">
+      <h3>তথ্য সংরক্ষণ ও ব্যাকআপ</h3>
+      <p class="muted">ব্যাকআপ ফাইল ডাউনলোড করে রাখো। ব্রাউজারের তথ্য মুছে গেলে তা কাজে লাগতে পারে।</p>
+      <div class="button-row">
+        <button class="btn" id="exportData">ব্যাকআপ ডাউনলোড</button>
+        <button class="btn secondary" id="importButton">ব্যাকআপ ফিরিয়ে আনো</button>
+        <input type="file" id="importFile" accept=".json,application/json" class="hidden">
+      </div>
+    </div>
+  </section>
+
+  <!-- DIARY -->
+  <section id="diaryPage" class="screen">
+    <div class="page-heading">
+      <button class="back-button" data-home>← ফিরে যাও</button>
+      <div>
+        <h2>আমার ডায়েরি</h2>
+        <p>নিজের স্মৃতি ও ভাবনা লিখে রাখো</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 id="diaryFormTitle">✍️ নতুন লেখা</h3>
+
+      <input type="hidden" id="diaryEditId">
+
+      <label class="field-label" for="diaryDate">তারিখ</label>
+      <input type="date" id="diaryDate">
+
+      <label class="field-label" for="diaryTitle">শিরোনাম</label>
+      <input type="text" id="diaryTitle" maxlength="150" placeholder="আজকের দিনের শিরোনাম">
+
+      <label class="field-label" for="diaryMood">আজকের অনুভূতি</label>
+      <select id="diaryMood">
+        <option value="সাধারণ">সাধারণ</option>
+        <option value="আনন্দিত">😊 আনন্দিত</option>
+        <option value="শান্ত">🌿 শান্ত</option>
+        <option value="চিন্তিত">🤔 চিন্তিত</option>
+        <option value="ক্লান্ত">😴 ক্লান্ত</option>
+      </select>
+
+      <label class="field-label" for="diaryBody">ডায়েরি</label>
+      <textarea id="diaryBody" placeholder="আজকের ঘটনা, অনুভূতি ও স্মৃতি লেখো..."></textarea>
+
+      <div class="button-row">
+        <button class="btn" id="saveDiary">লেখা সংরক্ষণ</button>
+        <button class="btn secondary hidden" id="cancelDiaryEdit">সম্পাদনা বাতিল</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📔 পুরোনো লেখা</h3>
+
+      <label class="field-label" for="diarySearch">লেখা খুঁজো</label>
+      <input type="search" id="diarySearch" placeholder="শিরোনাম বা লেখার শব্দ লিখো">
+
+      <label class="field-label" for="diaryMonthFilter">মাস অনুযায়ী</label>
+      <input type="month" id="diaryMonthFilter">
+
+      <button class="btn secondary" id="clearDiaryFilter">সব লেখা দেখো</button>
+
+      <div id="diaryList"></div>
+    </div>
+
+    <div class="notice">
+      🔒 এই সংস্করণের ডায়েরি পাসওয়ার্ড দিয়ে আলাদাভাবে সুরক্ষিত নয়। তাই সংবেদনশীল তথ্য লিখলে ডিভাইসটি নিরাপদ রাখবে।
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <strong>সময়পঞ্জি 🌿</strong><br>
+  নিজের সময়কে মূল্য দাও, প্রতিদিন একটু এগিয়ে যাও।<br>
+  <span id="footerYear"></span>
+</footer>
+
+<style>
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  text-align: center;
+}
+
+.calendar-cell {
+  min-width: 0;
+  padding: 8px 0;
+  border-radius: 9px;
+  font-size: 13px;
+}
+
+.calendar-weekday {
+  font-weight: 750;
+  color: var(--green);
+}
+
+.calendar-day {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text);
+}
+
+.calendar-day.today {
+  background: var(--green-light);
+  border-color: var(--green);
+  font-weight: 800;
+}
+
+.calendar-day.selected {
+  background: var(--green);
+  color: white;
+}
+
+.calendar-day:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+@media (max-width: 360px) {
+  .header-inner, main, footer {
+    width: calc(100% - 20px);
+  }
+
+  .menu-card {
+    padding: 12px 10px;
+  }
+
+  .menu-card strong {
+    font-size: 14px;
+  }
+
+  .calendar-cell {
+    font-size: 11px;
+    padding: 7px 0;
+  }
+}
+</style>
+
+<script>
+"use strict";
+
+/* ===============================
+   সময়পঞ্জি: মূল JavaScript
+================================ */
+
+const $ = id => document.getElementById(id);
+
+const STORAGE = {
+  reports: "somoyponji_reports_v1",
+  diaries: "somoyponji_diaries_v1",
+  notes: "somoyponji_notes_v1",
+  study: "somoyponji_study_v1",
+  work: "somoyponji_work_v1"
+};
+
+function readStore(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : JSON.parse(value);
+  } catch (error) {
+    console.error("তথ্য পড়া যায়নি:", error);
+    return fallback;
+  }
+}
+
+function writeStore(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+    return true;
+  } catch (error) {
+    alert("তথ্য সংরক্ষণ করা যায়নি। ব্রাউজারের স্টোরেজ পরীক্ষা করো।");
+    console.error(error);
+    return false;
+  }
+}
+
+function getReports() {
+  return readStore(STORAGE.reports, {});
+}
+
+function getDiaries() {
+  return readStore(STORAGE.diaries, []);
+}
+
+function getNotes() {
+  return readStore(STORAGE.notes, {});
+}
+
+function getStudyPlans() {
+  return readStore(STORAGE.study, []);
+}
+
+function getWorkPlans() {
+  return readStore(STORAGE.work, []);
+}
+
+function todayISO() {
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  return new Date(now.getTime() - offset * 60000)
+    .toISOString().slice(0, 10);
+}
+
+function banglaNumber(value) {
+  return String(value).replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[Number(d)]);
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function showPage(pageId) {
+  const page = $(pageId);
+
+  if (!page) {
+    alert("এই পেজটি পাওয়া যায়নি।");
+    return;
+  }
+
+  document.querySelectorAll(".screen").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  page.classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  if (pageId === "reportPage") {
+    loadReportForm($("reportDate").value || todayISO());
+  }
+
+  if (pageId === "summaryPage") {
+    renderSummary();
+  }
+
+  if (pageId === "diaryPage") {
+    renderDiaries();
+  }
+
+  if (pageId === "studentPage") {
+    renderStudyPlans();
+  }
+
+  if (pageId === "workerPage") {
+    renderWorkPlans();
+  }
+
+  if (pageId === "calendarPage") {
+    renderCalendar();
+  }
+
+  updateHomeStats();
+}
+
+document.querySelectorAll("[data-page]").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.page));
+});
+
+document.querySelectorAll("[data-home]").forEach(button => {
+  button.addEventListener("click", () => showPage("homePage"));
+});
+
+document.querySelectorAll("[data-goto]").forEach(button => {
+  button.addEventListener("click", () => showPage(button.dataset.goto));
+});
+
+/* ===============================
+   তারিখ ও ঘড়ি
+================================ */
+
+function updateClock() {
+  const now = new Date();
+
+  $("todayDate").textContent = now.toLocaleDateString("bn-BD", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+
+  let details = "ইংরেজি: " + now.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+
+  try {
+    const hijri = new Intl.DateTimeFormat("en-u-ca-islamic", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }).format(now);
+
+    details += " · হিজরি: " + hijri;
+  } catch (error) {
+    details += " · হিজরি তারিখ ডিভাইসের সুবিধার ওপর নির্ভরশীল";
+  }
+
+  $("todayDetails").textContent = details;
+
+  $("liveClock").textContent = now.toLocaleTimeString("bn-BD", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+
+  $("footerYear").textContent = "© " + now.getFullYear();
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
+/* ===============================
+   ক্যালেন্ডার
+================================ */
+
+let selectedCalendarDate = todayISO();
+
+function renderCalendar() {
+  const input = $("calendarMonth");
+
+  if (!input.value) {
+    input.value = todayISO().slice(0, 7);
+  }
+
+  const [year, month] = input.value.split("-").map(Number);
+  if (!year || !month) return;
+
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const totalDays = new Date(year, month, 0).getDate();
+
+  $("calendarTitle").textContent =
+    new Date(year, month - 1, 1).toLocaleDateString("bn-BD", {
+      month: "long",
+      year: "numeric"
+    });
+
+  const grid = $("calendarGrid");
+  grid.innerHTML = "";
+
+  const weekdays = ["রবি", "সোম", "মঙ্গল", "বুধ", "বৃহস্পতি", "শুক্র", "শনি"];
+
+  weekdays.forEach(day => {
+    const cell = document.createElement("div");
+    cell.className = "calendar-cell calendar-weekday";
+    cell.textContent = day;
+    grid.appendChild(cell);
+  });
+
+  for (let i = 0; i < firstDay; i++) {
+    const blank = document.createElement("div");
+    blank.className = "calendar-cell";
+    grid.appendChild(blank);
+  }
+
+  for (let day = 1; day <= totalDays; day++) {
+    const date = year + "-" +
+      String(month).padStart(2, "0") + "-" +
+      String(day).padStart(2, "0");
+
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "calendar-cell calendar-day";
+    button.textContent = banglaNumber(day);
+
+    if (date === todayISO()) button.classList.add("today");
+    if (date === selectedCalendarDate) button.classList.add("selected");
+
+    button.addEventListener("click", () => {
+      selectedCalendarDate = date;
+      renderCalendar();
+      loadCalendarNote();
+    });
+
+    grid.appendChild(button);
+  }
+
+  loadCalendarNote();
+}
+
+function loadCalendarNote() {
+  $("selectedDateText").textContent =
+    "নির্বাচিত তারিখ: " + selectedCalendarDate;
+
+  $("calendarNote").value =
+    getNotes()[selectedCalendarDate] || "";
+}
+
+$("showCalendar").addEventListener("click", renderCalendar);
+
+$("calendarToday").addEventListener("click", () => {
+  $("calendarMonth").value = todayISO().slice(0, 7);
+  selectedCalendarDate = todayISO();
+  renderCalendar();
+});
+
+$("saveCalendarNote").addEventListener("click", () => {
+  const notes = getNotes();
+  notes[selectedCalendarDate] = $("calendarNote").value;
+
+  if (writeStore(STORAGE.notes, notes)) {
+    alert("নোট সংরক্ষণ হয়েছে।");
+  }
+});
+
+/* ===============================
+   শিক্ষার্থী পরিকল্পনা
+================================ */
+
+$("addStudyPlan").addEventListener("click", () => {
+  const subject = $("studySubject").value.trim();
+  const hours = Number($("studyHours").value);
+  const date = $("studyDate").value || todayISO();
+
+  if (!subject) {
+    alert("বিষয়ের নাম লিখো।");
+    return;
+  }
+
+  if ($("studyHours").value === "" || !Number.isFinite(hours) ||
+      hours < 0 || hours > 24) {
+    alert("০ থেকে ২৪ ঘণ্টার মধ্যে সময় লিখো।");
+    return;
+  }
+
+  const plans = getStudyPlans();
+
+  plans.push({
+    id: Date.now() + Math.random(),
+    subject,
+    hours,
+    date,
+    done: false
+  });
+
+  if (writeStore(STORAGE.study, plans)) {
+    $("studySubject").value = "";
+    $("studyHours").value = "";
+    renderStudyPlans();
+    alert("পড়াশোনার পরিকল্পনা সংরক্ষিত হয়েছে।");
+  }
+});
+
+function renderStudyPlans() {
+  const list = $("studyPlanList");
+  const plans = getStudyPlans().sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
+
+  if (!plans.length) {
+    list.innerHTML = '<div class="empty">এখনো কোনো পরিকল্পনা নেই।</div>';
+    return;
+  }
+
+  list.innerHTML = plans.map(plan => `
+    <div class="report-entry">
+      <strong>${escapeHTML(plan.subject)}</strong>
+      <div class="muted">${escapeHTML(plan.date)} · ${escapeHTML(plan.hours)} ঘণ্টা</div>
+      <label>
+        <input type="checkbox" data-study-done="${plan.id}" ${plan.done ? "checked" : ""}>
+        সম্পন্ন হয়েছে
+      </label>
+      <button class="btn danger" data-study-delete="${plan.id}">মুছো</button>
+    </div>
+  `).join("");
+}
+
+$("studyPlanList").addEventListener("change", event => {
+  const id = event.target.dataset.studyDone;
+  if (!id) return;
+
+  const plans = getStudyPlans();
+  const plan = plans.find(item => String(item.id) === id);
+
+  if (plan) {
+    plan.done = event.target.checked;
+    writeStore(STORAGE.study, plans);
+    renderStudyPlans();
+  }
+});
+
+$("studyPlanList").addEventListener("click", event => {
+  const id = event.target.dataset.studyDelete;
+  if (!id) return;
+
+  if (!confirm("এই পরিকল্পনাটি মুছে ফেলবে?")) return;
+
+  const plans = getStudyPlans().filter(item => String(item.id) !== id);
+  writeStore(STORAGE.study, plans);
+  renderStudyPlans();
+});
+
+/* ===============================
+   চাকরিজীবীদের কাজ
+================================ */
+
+$("addWorkPlan").addEventListener("click", () => {
+  const title = $("workTitle").value.trim();
+  const date = $("workDate").value || todayISO();
+  const priority = $("workPriority").value;
+
+  if (!title) {
+    alert("কাজের নাম লিখো।");
+    return;
+  }
+
+  const plans = getWorkPlans();
+
+  plans.push({
+    id: Date.now() + Math.random(),
+    title,
+    date,
+    priority,
+    done: false
+  });
+
+  if (writeStore(STORAGE.work, plans)) {
+    $("workTitle").value = "";
+    renderWorkPlans();
+    alert("কাজ যোগ হয়েছে।");
+  }
+});
+
+function renderWorkPlans() {
+  const list = $("workPlanList");
+  const plans = getWorkPlans().sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
+
+  if (!plans.length) {
+    list.innerHTML = '<div class="empty">এখনো কোনো কাজ যোগ করা হয়নি।</div>';
+    return;
+  }
+
+  list.innerHTML = plans.map(plan => `
+    <div class="report-entry">
+      <strong>${escapeHTML(plan.title)}</strong>
+      <div class="muted">${escapeHTML(plan.date)} · অগ্রাধিকার: ${escapeHTML(plan.priority)}</div>
+      <label>
+        <input type="checkbox" data-work-done="${plan.id}" ${plan.done ? "checked" : ""}>
+        কাজ সম্পন্ন
+      </label>
+      <button class="btn danger" data-work-delete="${plan.id}">মুছো</button>
+    </div>
+  `).join("");
+}
+
+$("workPlanList").addEventListener("change", event => {
+  const id = event.target.dataset.workDone;
+  if (!id) return;
+
+  const plans = getWorkPlans();
+  const plan = plans.find(item => String(item.id) === id);
+
+  if (plan) {
+    plan.done = event.target.checked;
+    writeStore(STORAGE.work, plans);
+    renderWorkPlans();
+  }
+});
+
+$("workPlanList").addEventListener("click", event => {
+  const id = event.target.dataset.workDelete;
+  if (!id) return;
+
+  if (!confirm("এই কাজটি মুছে ফেলবে?")) return;
+
+  const plans = getWorkPlans().filter(item => String(item.id) !== id);
+  writeStore(STORAGE.work, plans);
+  renderWorkPlans();
+});
+
+/* ===============================
+   দৈনিক রিপোর্ট
+================================ */
+
+const prayers = [
+  ["fajr", "ফজর"],
+  ["dhuhr", "যোহর"],
+  ["asr", "আসর"],
+  ["maghrib", "মাগরিব"],
+  ["isha", "ইশা"]
+];
+
+const habits = [
+  ["friend", "বন্ধুর খোঁজ নিয়েছি"],
+  ["goodDeed", "ভালো কাজ করেছি"],
+  ["newspaper", "সংবাদপত্র পড়েছি"],
+  ["reflectionDone", "নিজের কাজ মূল্যায়ন করেছি"]
+];
+
+function buildTaskList(containerId, tasks) {
+  $(containerId).innerHTML = tasks.map(([id, label]) => `
+    <label class="task">
+      <input type="checkbox" id="task_${id}">
+      <span>${escapeHTML(label)}</span>
+    </label>
+  `).join("");
+}
+
+buildTaskList("prayerTasks", prayers);
+buildTaskList("habitTasks", habits);
+
+const reportFields = [
+  "quranAyahs",
+  "quranPages",
+  "quranJuz",
+  "hadithCount",
+  "bookPages",
+  "textbookHours",
+  "classAttendance",
+  "achievement",
+  "reflection"
+];
+
+function collectReportForm() {
+  const report = {};
+
+  prayers.forEach(([id]) => {
+    report[id] = $("task_" + id).checked;
+  });
+
+  habits.forEach(([id]) => {
+    report[id] = $("task_" + id).checked;
+  });
+
+  reportFields.forEach(id => {
+    report[id] = $(id).value;
+  });
+
+  return report;
+}
+
+function loadReportForm(date) {
+  $("reportDate").value = date;
+
+  const report = getReports()[date] || {};
+
+  prayers.forEach(([id]) => {
+    $("task_" + id).checked = Boolean(report[id]);
+  });
+
+  habits.forEach(([id]) => {
+    $("task_" + id).checked = Boolean(report[id]);
+  });
+
+  reportFields.forEach(id => {
+    $(id).value = report[id] ?? (id === "classAttendance" ? "না" : "");
+  });
+
+  updateReportProgress();
+}
+
+function calculateProgress(report) {
+  const checkable = [
+    ...prayers.map(([id]) => id),
+    ...habits.map(([id]) => id)
+  ];
+
+  const completed = checkable.filter(id => Boolean(report[id])).length;
+  return Math.round(completed / checkable.length * 100);
+}
+
+function updateReportProgress() {
+  const report = collectReportForm();
+  const percent = calculateProgress(report);
+  const prayerCount = prayers.filter(([id]) => report[id]).length;
+
+  $("reportPercent").textContent = banglaNumber(percent) + "%";
+  $("reportPrayer").textContent =
+    banglaNumber(prayerCount) + "/৫";
+
+  $("reportProgressBar").style.width = percent + "%";
+}
+
+$("prayerTasks").addEventListener("change", updateReportProgress);
+$("habitTasks").addEventListener("change", updateReportProgress);
+
+$("loadReport").addEventListener("click", () => {
+  loadReportForm($("reportDate").value || todayISO());
+});
+
+$("reportDate").addEventListener("change", () => {
+  loadReportForm($("reportDate").value || todayISO());
+});
+
+$("saveReport").addEventListener("click", () => {
+  const date = $("reportDate").value || todayISO();
+  const reports = getReports();
+
+  reports[date] = collectReportForm();
+
+  if (writeStore(STORAGE.reports, reports)) {
+    updateReportProgress();
+    updateHomeStats();
+    alert("দৈনিক হিসাব সংরক্ষণ হয়েছে।");
+  }
+});
+
+/* ===============================
+   হোম পেজের পরিসংখ্যান
+================================ */
+
+function updateHomeStats() {
+  const reports = getReports();
+  const report = reports[todayISO()] || {};
+
+  const percent = calculateProgress(report);
+  const prayerCount = prayers.filter(([id]) => Boolean(report[id])).length;
+
+  $("homePercent").textContent = banglaNumber(percent) + "%";
+  $("homePrayer").textContent = banglaNumber(prayerCount) + "/৫";
+  $("homeStudy").textContent =
+    banglaNumber(Number(report.textbookHours || 0));
+
+  $("homeDiary").textContent =
+    banglaNumber(getDiaries().filter(entry =>
+      entry.date === todayISO()
+    ).length);
+
+  $("homeProgressBar").style.width = percent + "%";
+}
+
+/* ===============================
+   মাসিক রিপোর্ট
+================================ */
+
+function renderSummary() {
+  const month = $("summaryMonth").value || todayISO().slice(0, 7);
+  $("summaryMonth").value = month;
+
+  const reports = getReports();
+
+  const entries = Object.entries(reports)
+    .filter(([date]) => date.startsWith(month))
+    .sort(([a], [b]) => b.localeCompare(a));
+
+  const count = entries.length;
+
+  const average = count
+    ? Math.round(entries.reduce((sum, [, report]) =>
+        sum + calculateProgress(report), 0) / count)
+    : 0;
+
+  const totalPrayers = entries.reduce((sum, [, report]) =>
+    sum + prayers.filter(([id]) => Boolean(report[id])).length, 0);
+
+  const totalHours = entries.reduce((sum, [, report]) =>
+    sum + Math.max(0, Number(report.textbookHours) || 0), 0);
+
+  $("summaryDays").textContent = banglaNumber(count);
+  $("summaryAverage").textContent = banglaNumber(average) + "%";
+  $("summaryPrayers").textContent = banglaNumber(totalPrayers);
+  $("summaryHours").textContent = banglaNumber(totalHours);
+
+  if (!count) {
+    $("summaryList").innerHTML =
+      '<div class="empty">এই মাসে কোনো রিপোর্ট সংরক্ষিত নেই।</div>';
+    return;
+  }
+
+  $("summaryList").innerHTML = entries.map(([date, report]) => `
+    <div class="report-entry">
+      <strong>${escapeHTML(date)}</strong>
+      <div class="muted">
+        অগ্রগতি: ${banglaNumber(calculateProgress(report))}%
+        · নামাজ: ${banglaNumber(
+          prayers.filter(([id]) => Boolean(report[id])).length
+        )}/৫
+        · পড়াশোনা: ${escapeHTML(report.textbookHours || 0)} ঘণ্টা
+      </div>
+      <button class="btn secondary" data-open-report="${escapeHTML(date)}">
+        রিপোর্ট খুলে দেখো
+      </button>
+    </div>
+  `).join("");
+}
+
+$("showSummary").addEventListener("click", renderSummary);
+
+$("summaryList").addEventListener("click", event => {
+  const date = event.target.dataset.openReport;
+  if (!date) return;
+
+  showPage("reportPage");
+  loadReportForm(date);
+});
+
+/* ===============================
+   ডায়েরি
+================================ */
+
+function resetDiaryForm() {
+  $("diaryEditId").value = "";
+  $("diaryDate").value = todayISO();
+  $("diaryTitle").value = "";
+  $("diaryMood").value = "সাধারণ";
+  $("diaryBody").value = "";
+  $("diaryFormTitle").textContent = "✍️ নতুন লেখা";
+  $("saveDiary").textContent = "লেখা সংরক্ষণ";
+  $("cancelDiaryEdit").classList.add("hidden");
+}
+
+$("saveDiary").addEventListener("click", () => {
+  const date = $("diaryDate").value || todayISO();
+  const title = $("diaryTitle").value.trim();
+  const body = $("diaryBody").value.trim();
+  const mood = $("diaryMood").value;
+  const editId = $("diaryEditId").value;
+
+  if (!title || !body) {
+    alert("ডায়েরির শিরোনাম ও লেখা দুটোই পূরণ করো।");
+    return;
+  }
+
+  let diaries = getDiaries();
+
+  if (editId) {
+    const index = diaries.findIndex(entry => String(entry.id) === editId);
+
+    if (index !== -1) {
+      diaries[index] = {
+        ...diaries[index],
+        date,
+        title,
+        body,
+        mood,
+        updatedAt: new Date().toISOString()
+      };
+    }
+  } else {
+    diaries.push({
+      id: Date.now() + Math.random(),
+      date,
+      title,
+      body,
+      mood,
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  if (writeStore(STORAGE.diaries, diaries)) {
+    resetDiaryForm();
+    renderDiaries();
+    updateHomeStats();
+    alert("ডায়েরির লেখা সংরক্ষিত হয়েছে।");
+  }
+});
+
+$("cancelDiaryEdit").addEventListener("click", resetDiaryForm);
+
+function renderDiaries() {
+  const list = $("diaryList");
+  const search = $("diarySearch").value.trim().toLowerCase();
+  const month = $("diaryMonthFilter").value;
+
+  const diaries = getDiaries()
+    .filter(entry => !month || entry.date.startsWith(month))
+    .filter(entry => !search ||
+      entry.title.toLowerCase().includes(search) ||
+      entry.body.toLowerCase().includes(search) ||
+      entry.date.includes(search))
+    .sort((a, b) => b.date.localeCompare(a.date));
+
+  if (!diaries.length) {
+    list.innerHTML =
+      '<div class="empty">কোনো ডায়েরি পাওয়া যায়নি। নতুন লেখা যোগ করো।</div>';
+    return;
+  }
+
+  list.innerHTML = diaries.map(entry => `
+    <article class="diary-entry">
+      <h4>${escapeHTML(entry.title)}</h4>
+      <div class="diary-meta">
+        ${escapeHTML(entry.date)} · অনুভূতি: ${escapeHTML(entry.mood)}
+      </div>
+      <p>${escapeHTML(entry.body)}</p>
+      <div class="button-row">
+        <button class="btn secondary" data-diary-edit="${entry.id}">সম্পাদনা</button>
+        <button class="btn danger" data-diary-delete="${entry.id}">মুছে ফেলো</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+$("diarySearch").addEventListener("input", renderDiaries);
+$("diaryMonthFilter").addEventListener("change", renderDiaries);
+
+$("clearDiaryFilter").addEventListener("click", () => {
+  $("diarySearch").value = "";
+  $("diaryMonthFilter").value = "";
+  renderDiaries();
+});
+
+$("diaryList").addEventListener("click", event => {
+  const editId = event.target.dataset.diaryEdit;
+  const deleteId = event.target.dataset.diaryDelete;
+
+  if (editId) {
+    const entry = getDiaries().find(item =>
+      String(item.id) === editId
+    );
+
+    if (!entry) return;
+
+    $("diaryEditId").value = entry.id;
+    $("diaryDate").value = entry.date;
+    $("diaryTitle").value = entry.title;
+    $("diaryMood").value = entry.mood;
+    $("diaryBody").value = entry.body;
+    $("diaryFormTitle").textContent = "✏️ ডায়েরি সম্পাদনা";
+    $("saveDiary").textContent = "পরিবর্তন সংরক্ষণ";
+    $("cancelDiaryEdit").classList.remove("hidden");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  if (deleteId) {
+    if (!confirm("এই ডায়েরির লেখাটি স্থায়ীভাবে মুছে ফেলবে?")) return;
+
+    const diaries = getDiaries().filter(entry =>
+      String(entry.id) !== deleteId
+    );
+
+    if (writeStore(STORAGE.diaries, diaries)) {
+      renderDiaries();
+      updateHomeStats();
+    }
+  }
+});
+
+/* ===============================
+   ব্যাকআপ ডাউনলোড ও পুনরুদ্ধার
+================================ */
+
+$("exportData").addEventListener("click", () => {
+  const data = {};
+
+  Object.values(STORAGE).forEach(key => {
+    data[key] = readStore(key, key === STORAGE.diaries ||
+      key === STORAGE.study || key === STORAGE.work ? [] : {});
+  });
+
+  const blob = new Blob(
+    [JSON.stringify(data, null, 2)],
+    { type: "application/json;charset=utf-8" }
+  );
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "somoyponji-backup-" + todayISO() + ".json";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+$("importButton").addEventListener("click", () => {
+  $("importFile").click();
+});
+
+$("importFile").addEventListener("change", async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  try {
+    const data = JSON.parse(await file.text());
+
+    if (!confirm(
+      "ব্যাকআপের তথ্য বর্তমান তথ্যের সঙ্গে মিশবে। একই আইডি থাকলে পুরোনোটি প্রতিস্থাপিত হবে। চালিয়ে যাবে?"
+    )) {
+      event.target.value = "";
+      return;
+    }
+
+    const reports = getReports();
+    const diaries = getDiaries();
+    const notes = getNotes();
+    const study = getStudyPlans();
+    const work = getWorkPlans();
+
+    const incomingReports = data[STORAGE.reports] || {};
+    const incomingNotes = data[STORAGE.notes] || {};
+
+    const mergedReports = { ...reports, ...incomingReports };
+    const mergedNotes = { ...notes, ...incomingNotes };
+
+    const mergeById = (oldItems, newItems) => {
+      const map = new Map();
+
+      [...oldItems, ...(Array.isArray(newItems) ? newItems : [])]
+        .forEach(item => map.set(String(item.id), item));
+
+      return [...map.values()];
+    };
+
+    const mergedDiaries = mergeById(
+      diaries, data[STORAGE.diaries]
+    );
+
+    const mergedStudy = mergeById(
+      study, data[STORAGE.study]
+    );
+
+    const mergedWork = mergeById(
+      work, data[STORAGE.work]
+    );
+
+    const success = [
+      writeStore(STORAGE.reports, mergedReports),
+      writeStore(STORAGE.diaries, mergedDiaries),
+      writeStore(STORAGE.notes, mergedNotes),
+      writeStore(STORAGE.study, mergedStudy),
+      writeStore(STORAGE.work, mergedWork)
+    ].every(Boolean);
+
+    if (!success) return;
+
+    loadReportForm($("reportDate").value || todayISO());
+    renderDiaries();
+    renderStudyPlans();
+    renderWorkPlans();
+    renderSummary();
+    updateHomeStats();
+
+    alert("ব্যাকআপের তথ্য পুনরুদ্ধার হয়েছে।");
+  } catch (error) {
+    alert("ব্যাকআপ ফাইলটি পড়া যায়নি। সঠিক JSON ফাইল নির্বাচন করো।");
+    console.error(error);
+  }
+
+  event.target.value = "";
+});
+
+/* ===============================
+   শুরুতে প্রয়োজনীয় মান
+================================ */
+
+$("calendarMonth").value = todayISO().slice(0, 7);
+$("studyDate").value = todayISO();
+$("workDate").value = todayISO();
+$("reportDate").value = todayISO();
+$("diaryDate").value = todayISO();
+$("summaryMonth").value = todayISO().slice(0, 7);
+
+renderCalendar();
+loadReportForm(todayISO());
+renderStudyPlans();
+renderWorkPlans();
+renderSummary();
+renderDiaries();
+updateHomeStats();
+
+</script>
+</body>
+</html>
+</html>
